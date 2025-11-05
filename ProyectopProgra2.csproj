@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E8139C27-4C9D-4A96-AA04-9D282DA88DBF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ProyectopProgra2</RootNamespace>
+    <AssemblyName>ProyectopProgra2</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="02-CRUD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="02-CRUD.Designer.cs">
+      <DependentUpon>02-CRUD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="01-Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="01-Login.Designer.cs">
+      <DependentUpon>01-Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="03-ROLES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="03-ROLES.Designer.cs">
+      <DependentUpon>03-ROLES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="04-SUCURSALES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="04-SUCURSALES.Designer.cs">
+      <DependentUpon>04-SUCURSALES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="05-DISTRIBUIDORES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="05-DISTRIBUIDORES.Designer.cs">
+      <DependentUpon>05-DISTRIBUIDORES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="06-CLIENTES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="06-CLIENTES.Designer.cs">
+      <DependentUpon>06-CLIENTES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="07-EMPLEADOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="07-EMPLEADOS.Designer.cs">
+      <DependentUpon>07-EMPLEADOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="08-USUARIOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="08-USUARIOS.Designer.cs">
+      <DependentUpon>08-USUARIOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="09-MATERIALES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="09-MATERIALES.Designer.cs">
+      <DependentUpon>09-MATERIALES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="10-INVENTARIOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="10-INVENTARIOS.Designer.cs">
+      <DependentUpon>10-INVENTARIOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="11-VENTAS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="11-VENTAS.Designer.cs">
+      <DependentUpon>11-VENTAS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="12-DETALLEVENTAS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="12-DETALLEVENTAS.Designer.cs">
+      <DependentUpon>12-DETALLEVENTAS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="13-ENVIOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="13-ENVIOS.Designer.cs">
+      <DependentUpon>13-ENVIOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="14-DETALLEENVIOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="14-DETALLEENVIOS.Designer.cs">
+      <DependentUpon>14-DETALLEENVIOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="15-PAGOCLIENTES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="15-PAGOCLIENTES.Designer.cs">
+      <DependentUpon>15-PAGOCLIENTES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="16-PAGOCONTRIBUIDORES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="16-PAGOCONTRIBUIDORES.Designer.cs">
+      <DependentUpon>16-PAGOCONTRIBUIDORES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="17-PAGOSEMPLEADOS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="17-PAGOSEMPLEADOS.Designer.cs">
+      <DependentUpon>17-PAGOSEMPLEADOS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="01-Login.resx">
+      <DependentUpon>01-Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="02-CRUD.resx">
+      <DependentUpon>02-CRUD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="03-ROLES.resx">
+      <DependentUpon>03-ROLES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="04-SUCURSALES.resx">
+      <DependentUpon>04-SUCURSALES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="05-DISTRIBUIDORES.resx">
+      <DependentUpon>05-DISTRIBUIDORES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="06-CLIENTES.resx">
+      <DependentUpon>06-CLIENTES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="07-EMPLEADOS.resx">
+      <DependentUpon>07-EMPLEADOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="08-USUARIOS.resx">
+      <DependentUpon>08-USUARIOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="09-MATERIALES.resx">
+      <DependentUpon>09-MATERIALES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="10-INVENTARIOS.resx">
+      <DependentUpon>10-INVENTARIOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="11-VENTAS.resx">
+      <DependentUpon>11-VENTAS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="12-DETALLEVENTAS.resx">
+      <DependentUpon>12-DETALLEVENTAS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="13-ENVIOS.resx">
+      <DependentUpon>13-ENVIOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="14-DETALLEENVIOS.resx">
+      <DependentUpon>14-DETALLEENVIOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="15-PAGOCLIENTES.resx">
+      <DependentUpon>15-PAGOCLIENTES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="16-PAGOCONTRIBUIDORES.resx">
+      <DependentUpon>16-PAGOCONTRIBUIDORES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="17-PAGOSEMPLEADOS.resx">
+      <DependentUpon>17-PAGOSEMPLEADOS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

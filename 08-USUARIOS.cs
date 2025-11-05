@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace ProyectopProgra2
+{
+    public partial class _08_USUARIOS : Form
+    {
+        public _08_USUARIOS()
+        {
+            InitializeComponent();
+        }
+
+        private void _08_USUARIOS_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
