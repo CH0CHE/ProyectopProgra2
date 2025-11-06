@@ -243,7 +243,7 @@
             this.Controls.Add(this.btnClientes);
             this.Controls.Add(this.btnRoles);
             this.Name = "CRUD";
-            this.Text = "CRUD";
+            this.Text = "MENÚ PRINCIPAL";
             this.Load += new System.EventHandler(this.CRUD_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
