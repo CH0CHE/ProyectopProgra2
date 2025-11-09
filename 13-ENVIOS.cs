@@ -42,92 +42,116 @@ namespace ProyectopProgra2
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los envíos: " + ex.Message);
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtDireccion.Text) || string.IsNullOrWhiteSpace(txtVehiculo.Text) || string.IsNullOrWhiteSpace(txtCosto.Text))
+            try
             {
-                MessageBox.Show("Por favor, complete los campos requeridos.");
-                return;
+                if (string.IsNullOrWhiteSpace(txtDireccion.Text) || string.IsNullOrWhiteSpace(txtVehiculo.Text) || string.IsNullOrWhiteSpace(txtCosto.Text))
+                {
+                    MessageBox.Show("Por favor, complete los campos requeridos.");
+                    return;
+                }
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO Envios 
+                                     (codigo_venta, fecha_envio, direccion_envio, vehiculo_asignado, costo_envio, estado_envio)
+                                     VALUES (@venta, @fecha, @direccion, @vehiculo, @costo, @estado)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+
+                    // Simular error de clave foránea
+                    cmd.Parameters.AddWithValue("@venta", 9999);
+                    cmd.Parameters.AddWithValue("@fecha", dtpFechaEnvio.Value);
+                    cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text);
+                    cmd.Parameters.AddWithValue("@vehiculo", txtVehiculo.Text);
+                    cmd.Parameters.AddWithValue("@costo", Convert.ToDecimal(txtCosto.Text));
+                    cmd.Parameters.AddWithValue("@estado", "Pendiente");
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Envío agregado correctamente.");
+                    CargarEnvios();
+                    LimpiarCampos();
+                }
             }
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = @"INSERT INTO Envios 
-                                 (codigo_venta, fecha_envio, direccion_envio, vehiculo_asignado, costo_envio, estado_envio)
-                                 VALUES (@venta, @fecha, @direccion, @vehiculo, @costo, @estado)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@venta", 1); // Valor fijo demo
-                cmd.Parameters.AddWithValue("@fecha", dtpFechaEnvio.Value);
-                cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text);
-                cmd.Parameters.AddWithValue("@vehiculo", txtVehiculo.Text);
-                cmd.Parameters.AddWithValue("@costo", Convert.ToDecimal(txtCosto.Text));
-                cmd.Parameters.AddWithValue("@estado", "Pendiente");
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Envío agregado correctamente.");
-                CargarEnvios();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            if (dgvEnvios.SelectedRows.Count == 0)
+            try
             {
-                MessageBox.Show("Seleccione un registro para editar.");
-                return;
+                if (dgvEnvios.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un registro para editar.");
+                    return;
+                }
+
+                int id = Convert.ToInt32(dgvEnvios.SelectedRows[0].Cells["codigo_envio"].Value);
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"UPDATE Envios 
+                                     SET direccion_envio=@direccion, vehiculo_asignado=@vehiculo, costo_envio=@costo, estado_envio=@estado
+                                     WHERE codigo_envio=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text);
+                    cmd.Parameters.AddWithValue("@vehiculo", txtVehiculo.Text);
+                    cmd.Parameters.AddWithValue("@costo", Convert.ToDecimal(txtCosto.Text));
+                    cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Pendiente");
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Envío actualizado correctamente.");
+                    CargarEnvios();
+                    LimpiarCampos();
+                }
             }
-
-            int id = Convert.ToInt32(dgvEnvios.SelectedRows[0].Cells["codigo_envio"].Value);
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = @"UPDATE Envios 
-                                 SET direccion_envio=@direccion, vehiculo_asignado=@vehiculo, costo_envio=@costo, estado_envio=@estado
-                                 WHERE codigo_envio=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text);
-                cmd.Parameters.AddWithValue("@vehiculo", txtVehiculo.Text);
-                cmd.Parameters.AddWithValue("@costo", Convert.ToDecimal(txtCosto.Text));
-                cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Pendiente");
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Envío actualizado correctamente.");
-                CargarEnvios();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (dgvEnvios.SelectedRows.Count == 0)
+            try
             {
-                MessageBox.Show("Seleccione un registro para eliminar.");
-                return;
+                if (dgvEnvios.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un registro para eliminar.");
+                    return;
+                }
+
+                int id = Convert.ToInt32(dgvEnvios.SelectedRows[0].Cells["codigo_envio"].Value);
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM Envios WHERE codigo_envio=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Envío eliminado correctamente.");
+                    CargarEnvios();
+                    LimpiarCampos();
+                }
             }
-
-            int id = Convert.ToInt32(dgvEnvios.SelectedRows[0].Cells["codigo_envio"].Value);
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = "DELETE FROM Envios WHERE codigo_envio=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Envío eliminado correctamente.");
-                CargarEnvios();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LimpiarCampos()
         {
             txtDireccion.Clear();

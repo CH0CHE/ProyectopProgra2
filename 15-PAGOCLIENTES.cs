@@ -61,21 +61,35 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"INSERT INTO Pagos_Clientes 
-                                 (codigo_cliente, fecha_pago, monto, metodo_pago, estado_pago)
-                                 VALUES (@cliente, @fecha, @monto, @metodo, @estado)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@cliente", 1); // valor fijo demo
-                cmd.Parameters.AddWithValue("@fecha", DateTime.Now);
-                cmd.Parameters.AddWithValue("@monto", Convert.ToDecimal(txtMonto.Text));
-                cmd.Parameters.AddWithValue("@metodo", cmbMetodo.SelectedItem.ToString());
-                cmd.Parameters.AddWithValue("@estado", "Pagado");
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO Pagos_Clientes 
+                                     (codigo_cliente, fecha_pago, monto, metodo_pago, estado_pago)
+                                     VALUES (@cliente, @fecha, @monto, @metodo, @estado)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@cliente", 1); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@fecha", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@monto", Convert.ToDecimal(txtMonto.Text));
+                    cmd.Parameters.AddWithValue("@metodo", cmbMetodo.SelectedItem.ToString());
+                    cmd.Parameters.AddWithValue("@estado", "Pagado");
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Pago de cliente agregado correctamente.");
-                CargarPagosClientes();
-                LimpiarCampos();
+                    MessageBox.Show("Pago de cliente agregado correctamente.");
+                    CargarPagosClientes();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
+                        MessageBox.Show("Error: El código de cliente no existe. Verifique la relación con la tabla Clientes.");
+                    else
+                        MessageBox.Show("Error SQL al insertar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al insertar: " + ex.Message);
+                }
             }
         }
 
@@ -91,20 +105,34 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"UPDATE Pagos_Clientes 
-                                 SET monto=@monto, metodo_pago=@metodo, estado_pago=@estado
-                                 WHERE codigo_pago_cliente=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@monto", Convert.ToDecimal(txtMonto.Text));
-                cmd.Parameters.AddWithValue("@metodo", cmbMetodo.SelectedItem?.ToString() ?? "Efectivo");
-                cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Pagado");
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    string query = @"UPDATE Pagos_Clientes 
+                                     SET monto=@monto, metodo_pago=@metodo, estado_pago=@estado
+                                     WHERE codigo_pago_cliente=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@monto", Convert.ToDecimal(txtMonto.Text));
+                    cmd.Parameters.AddWithValue("@metodo", cmbMetodo.SelectedItem?.ToString() ?? "Efectivo");
+                    cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Pagado");
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Pago de cliente actualizado correctamente.");
-                CargarPagosClientes();
-                LimpiarCampos();
+                    MessageBox.Show("Pago de cliente actualizado correctamente.");
+                    CargarPagosClientes();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
+                        MessageBox.Show("Error: No se puede actualizar por conflicto de clave foránea (relación con Clientes).");
+                    else
+                        MessageBox.Show("Error SQL al actualizar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al actualizar: " + ex.Message);
+                }
             }
         }
 
@@ -120,23 +148,39 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = "DELETE FROM Pagos_Clientes WHERE codigo_pago_cliente=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    string query = "DELETE FROM Pagos_Clientes WHERE codigo_pago_cliente=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Pago de cliente eliminado correctamente.");
-                CargarPagosClientes();
-                LimpiarCampos();
+                    MessageBox.Show("Pago de cliente eliminado correctamente.");
+                    CargarPagosClientes();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
+                        MessageBox.Show("Error: No se puede eliminar este pago porque está relacionado con otros registros (clave foránea).");
+                    else
+                        MessageBox.Show("Error SQL al eliminar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al eliminar: " + ex.Message);
+                }
             }
         }
+
         private void LimpiarCampos()
         {
             txtMonto.Clear();
             cmbMetodo.SelectedIndex = -1;
             cmbEstado.SelectedIndex = -1;
         }
+
         private void btnRegresar_Click(object sender, EventArgs e)
         {
             CRUD ventanaPrincipal = new CRUD();

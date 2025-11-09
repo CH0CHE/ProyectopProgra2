@@ -22,6 +22,7 @@ namespace ProyectopProgra2
         {
             CargarUsuarios();
         }
+
         private void CargarUsuarios()
         {
             try
@@ -29,7 +30,7 @@ namespace ProyectopProgra2
                 using (SqlConnection conn = ConexionBD.ObtenerConexion())
                 {
                     conn.Open();
-                    string query = "SELECT codigo_usuario, nombre_usuario, contrasena_usuario FROM Usuarios";
+                    string query = "SELECT codigo_usuario, nombre_usuario, contraseña_usuario FROM Usuarios";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
@@ -38,9 +39,10 @@ namespace ProyectopProgra2
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los usuarios: " + ex.Message);
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LimpiarCampos()
         {
             txtUsuario.Clear();
@@ -52,7 +54,7 @@ namespace ProyectopProgra2
             if (e.RowIndex >= 0)
             {
                 txtUsuario.Text = dgvUsuarios.Rows[e.RowIndex].Cells["nombre_usuario"].Value.ToString();
-                txtContrasena.Text = dgvUsuarios.Rows[e.RowIndex].Cells["contrasena_usuario"].Value.ToString();
+                txtContrasena.Text = dgvUsuarios.Rows[e.RowIndex].Cells["contraseña_usuario"].Value.ToString();
             }
         }
 
@@ -64,22 +66,29 @@ namespace ProyectopProgra2
                 return;
             }
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = @"INSERT INTO Usuarios 
-                                 (nombre_usuario, contrasena_usuario, rol_usuario, estado_usuario)
-                                 VALUES (@nombre, @contrasena, @rol, @estado)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
-                cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
-                cmd.Parameters.AddWithValue("@rol", "Administrador"); // valor fijo demo
-                cmd.Parameters.AddWithValue("@estado", "Activo"); // valor fijo demo
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO Usuarios 
+                                     (nombre_usuario, contraseña_usuario, rol_usuario, estado_usuario)
+                                     VALUES (@nombre, @contrasena, @rol, @estado)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
+                    cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
+                    cmd.Parameters.AddWithValue("@rol", "Administrador"); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@estado", "Activo"); // valor fijo demo
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Usuario agregado correctamente.");
-                CargarUsuarios();
-                LimpiarCampos();
+                    MessageBox.Show("Usuario agregado correctamente.");
+                    CargarUsuarios();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -93,19 +102,26 @@ namespace ProyectopProgra2
 
             int id = Convert.ToInt32(dgvUsuarios.SelectedRows[0].Cells["codigo_usuario"].Value);
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = "UPDATE Usuarios SET nombre_usuario=@nombre, contrasena_usuario=@contrasena WHERE codigo_usuario=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
-                cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "UPDATE Usuarios SET nombre_usuario=@nombre, contraseña_usuario=@contrasena WHERE codigo_usuario=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
+                    cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Usuario actualizado correctamente.");
-                CargarUsuarios();
-                LimpiarCampos();
+                    MessageBox.Show("Usuario actualizado correctamente.");
+                    CargarUsuarios();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -119,17 +135,24 @@ namespace ProyectopProgra2
 
             int id = Convert.ToInt32(dgvUsuarios.SelectedRows[0].Cells["codigo_usuario"].Value);
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = "DELETE FROM Usuarios WHERE codigo_usuario=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM Usuarios WHERE codigo_usuario=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Usuario eliminado correctamente.");
-                CargarUsuarios();
-                LimpiarCampos();
+                    MessageBox.Show("Usuario eliminado correctamente.");
+                    CargarUsuarios();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

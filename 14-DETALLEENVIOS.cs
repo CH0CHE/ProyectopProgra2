@@ -59,22 +59,36 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"INSERT INTO Detalle_Envios 
-                                 (codigo_envio, codigo_material, cantidad, costo_unitario, costo_total, estado_detalle_envio)
-                                 VALUES (@envio, @material, @cantidad, @costoU, @costoT, @estado)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@envio", 1); // valor fijo demo
-                cmd.Parameters.AddWithValue("@material", 1); // valor fijo demo
-                cmd.Parameters.AddWithValue("@cantidad", cantidad);
-                cmd.Parameters.AddWithValue("@costoU", costoUnitario);
-                cmd.Parameters.AddWithValue("@costoT", costoTotal);
-                cmd.Parameters.AddWithValue("@estado", "Activo");
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO Detalle_Envios 
+                                     (codigo_envio, codigo_material, cantidad, costo_unitario, costo_total, estado_detalle_envio)
+                                     VALUES (@envio, @material, @cantidad, @costoU, @costoT, @estado)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@envio", 1); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@material", 1); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@costoU", costoUnitario);
+                    cmd.Parameters.AddWithValue("@costoT", costoTotal);
+                    cmd.Parameters.AddWithValue("@estado", "Activo");
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Detalle de envío agregado correctamente.");
-                CargarDetalleEnvios();
-                LimpiarCampos();
+                    MessageBox.Show("Detalle de envío agregado correctamente.");
+                    CargarDetalleEnvios();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547) // Violación de FK
+                        MessageBox.Show("Error: El código de envío o material no existe. Verifique las claves foráneas.");
+                    else
+                        MessageBox.Show("Error SQL al insertar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al insertar: " + ex.Message);
+                }
             }
         }
 
@@ -90,25 +104,39 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"UPDATE Detalle_Envios 
-                                 SET cantidad=@cantidad, costo_unitario=@costoU, costo_total=@costoT, estado_detalle_envio=@estado
-                                 WHERE codigo_detalle_envio=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                int cantidad = Convert.ToInt32(txtCantidad.Text);
-                decimal costoU = Convert.ToDecimal(txtCostoUnitario.Text);
-                decimal costoT = cantidad * costoU;
+                try
+                {
+                    conn.Open();
+                    string query = @"UPDATE Detalle_Envios 
+                                     SET cantidad=@cantidad, costo_unitario=@costoU, costo_total=@costoT, estado_detalle_envio=@estado
+                                     WHERE codigo_detalle_envio=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    int cantidad = Convert.ToInt32(txtCantidad.Text);
+                    decimal costoU = Convert.ToDecimal(txtCostoUnitario.Text);
+                    decimal costoT = cantidad * costoU;
 
-                cmd.Parameters.AddWithValue("@cantidad", cantidad);
-                cmd.Parameters.AddWithValue("@costoU", costoU);
-                cmd.Parameters.AddWithValue("@costoT", costoT);
-                cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Activo");
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@costoU", costoU);
+                    cmd.Parameters.AddWithValue("@costoT", costoT);
+                    cmd.Parameters.AddWithValue("@estado", cmbEstado.SelectedItem?.ToString() ?? "Activo");
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Detalle de envío actualizado correctamente.");
-                CargarDetalleEnvios();
-                LimpiarCampos();
+                    MessageBox.Show("Detalle de envío actualizado correctamente.");
+                    CargarDetalleEnvios();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
+                        MessageBox.Show("Error: No se puede actualizar por conflicto de clave foránea.");
+                    else
+                        MessageBox.Show("Error SQL al actualizar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al actualizar: " + ex.Message);
+                }
             }
         }
 
@@ -124,17 +152,32 @@ namespace ProyectopProgra2
 
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
-                conn.Open();
-                string query = "DELETE FROM Detalle_Envios WHERE codigo_detalle_envio=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    string query = "DELETE FROM Detalle_Envios WHERE codigo_detalle_envio=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Detalle de envío eliminado correctamente.");
-                CargarDetalleEnvios();
-                LimpiarCampos();
+                    MessageBox.Show("Detalle de envío eliminado correctamente.");
+                    CargarDetalleEnvios();
+                    LimpiarCampos();
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number == 547)
+                        MessageBox.Show("Error: No se puede eliminar porque el registro está relacionado con otras tablas (clave foránea).");
+                    else
+                        MessageBox.Show("Error SQL al eliminar: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error general al eliminar: " + ex.Message);
+                }
             }
         }
+
         private void LimpiarCampos()
         {
             txtCantidad.Clear();
@@ -147,7 +190,6 @@ namespace ProyectopProgra2
             CRUD ventanaPrincipal = new CRUD();
             ventanaPrincipal.Show();
             this.Hide();
-
         }
 
         private void dgvDetalleEnvios_CellContentClick(object sender, DataGridViewCellEventArgs e)

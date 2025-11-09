@@ -39,7 +39,8 @@ namespace ProyectopProgra2
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los materiales: " + ex.Message);
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -51,23 +52,32 @@ namespace ProyectopProgra2
                 return;
             }
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = @"INSERT INTO Materiales 
-                                 (nombre_material, precio, stock, categoria, estado_material)
-                                 VALUES (@nombre, @precio, @stock, @categoria, @estado)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
-                cmd.Parameters.AddWithValue("@precio", Convert.ToDecimal(txtPrecio.Text));
-                cmd.Parameters.AddWithValue("@stock", 50); // valor fijo demo
-                cmd.Parameters.AddWithValue("@categoria", "General"); // valor fijo demo
-                cmd.Parameters.AddWithValue("@estado", "Activo"); // valor fijo demo
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO Materiales 
+                                     (nombre_material, precio, stock, categoria, estado_material, codigo_distribuidor)
+                                     VALUES (@nombre, @precio, @stock, @categoria, @estado, @distribuidor)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@precio", Convert.ToDecimal(txtPrecio.Text));
+                    cmd.Parameters.AddWithValue("@stock", 50); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@categoria", "General"); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@estado", "Activo"); // valor fijo demo
+                    cmd.Parameters.AddWithValue("@distribuidor", 1); // valor fijo demo (debe existir en la tabla Distribuidores)
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Material agregado correctamente.");
-                CargarMateriales();
-                LimpiarCampos();
+                    MessageBox.Show("Material agregado correctamente.");
+                    CargarMateriales();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -81,19 +91,27 @@ namespace ProyectopProgra2
 
             int id = Convert.ToInt32(dgvMateriales.SelectedRows[0].Cells["codigo_material"].Value);
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = "UPDATE Materiales SET nombre_material=@nombre, precio=@precio WHERE codigo_material=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
-                cmd.Parameters.AddWithValue("@precio", Convert.ToDecimal(txtPrecio.Text));
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "UPDATE Materiales SET nombre_material=@nombre, precio=@precio WHERE codigo_material=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@precio", Convert.ToDecimal(txtPrecio.Text));
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Material actualizado correctamente.");
-                CargarMateriales();
-                LimpiarCampos();
+                    MessageBox.Show("Material actualizado correctamente.");
+                    CargarMateriales();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -107,17 +125,25 @@ namespace ProyectopProgra2
 
             int id = Convert.ToInt32(dgvMateriales.SelectedRows[0].Cells["codigo_material"].Value);
 
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            try
             {
-                conn.Open();
-                string query = "DELETE FROM Materiales WHERE codigo_material=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM Materiales WHERE codigo_material=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Material eliminado correctamente.");
-                CargarMateriales();
-                LimpiarCampos();
+                    MessageBox.Show("Material eliminado correctamente.");
+                    CargarMateriales();
+                    LimpiarCampos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -129,6 +155,7 @@ namespace ProyectopProgra2
                 txtPrecio.Text = dgvMateriales.Rows[e.RowIndex].Cells["precio"].Value.ToString();
             }
         }
+
         private void LimpiarCampos()
         {
             txtNombre.Clear();

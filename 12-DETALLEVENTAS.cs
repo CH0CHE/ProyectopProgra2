@@ -39,102 +39,128 @@ namespace ProyectopProgra2
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los detalles de venta: " + ex.Message);
+                MessageBox.Show("Error al cargar los detalles de venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtCantidad.Text) || string.IsNullOrWhiteSpace(txtPrecio.Text))
+            try
             {
-                MessageBox.Show("Por favor, complete los campos requeridos.");
-                return;
+                if (string.IsNullOrWhiteSpace(txtCantidad.Text) || string.IsNullOrWhiteSpace(txtPrecio.Text))
+                {
+                    MessageBox.Show("Por favor, complete los campos requeridos.");
+                    return;
+                }
+
+                int cantidad = Convert.ToInt32(txtCantidad.Text);
+                decimal precio = Convert.ToDecimal(txtPrecio.Text);
+                decimal subtotal = cantidad * precio;
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"INSERT INTO DetalleVentas 
+                                     (codigo_venta, codigo_material, cantidad, precio_unitario, subtotal)
+                                     VALUES (@venta, @material, @cantidad, @precio, @subtotal)";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+
+                    // Simulación de error FK: valores que no existen en las tablas relacionadas
+                    cmd.Parameters.AddWithValue("@venta", 9999);
+                    cmd.Parameters.AddWithValue("@material", 9999);
+
+                    cmd.Parameters.AddWithValue("@cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@precio", precio);
+                    cmd.Parameters.AddWithValue("@subtotal", subtotal);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Detalle de venta agregado correctamente.");
+                    CargarDetalleVentas();
+                    LimpiarCampos();
+                }
             }
-
-            int cantidad = Convert.ToInt32(txtCantidad.Text);
-            decimal precio = Convert.ToDecimal(txtPrecio.Text);
-            decimal subtotal = cantidad * precio;
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = @"INSERT INTO DetalleVentas 
-                                 (codigo_venta, codigo_material, cantidad, precio_unitario, subtotal)
-                                 VALUES (@venta, @material, @cantidad, @precio, @subtotal)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@venta", 1); // valor fijo demo
-                cmd.Parameters.AddWithValue("@material", 1); // valor fijo demo
-                cmd.Parameters.AddWithValue("@cantidad", cantidad);
-                cmd.Parameters.AddWithValue("@precio", precio);
-                cmd.Parameters.AddWithValue("@subtotal", subtotal);
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Detalle de venta agregado correctamente.");
-                CargarDetalleVentas();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDetalleVentas.SelectedRows.Count == 0)
+            try
             {
-                MessageBox.Show("Seleccione un registro para editar.");
-                return;
+                if (dgvDetalleVentas.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un registro para editar.");
+                    return;
+                }
+
+                int id = Convert.ToInt32(dgvDetalleVentas.SelectedRows[0].Cells["codigo_detalle"].Value);
+                int cantidad = Convert.ToInt32(txtCantidad.Text);
+                decimal precio = Convert.ToDecimal(txtPrecio.Text);
+                decimal subtotal = cantidad * precio;
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = @"UPDATE DetalleVentas 
+                                     SET cantidad=@cantidad, precio_unitario=@precio, subtotal=@subtotal
+                                     WHERE codigo_detalle=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@precio", precio);
+                    cmd.Parameters.AddWithValue("@subtotal", subtotal);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Detalle de venta actualizado correctamente.");
+                    CargarDetalleVentas();
+                    LimpiarCampos();
+                }
             }
-
-            int id = Convert.ToInt32(dgvDetalleVentas.SelectedRows[0].Cells["codigo_detalle"].Value);
-            int cantidad = Convert.ToInt32(txtCantidad.Text);
-            decimal precio = Convert.ToDecimal(txtPrecio.Text);
-            decimal subtotal = cantidad * precio;
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = @"UPDATE DetalleVentas 
-                                 SET cantidad=@cantidad, precio_unitario=@precio, subtotal=@subtotal
-                                 WHERE codigo_detalle=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@cantidad", cantidad);
-                cmd.Parameters.AddWithValue("@precio", precio);
-                cmd.Parameters.AddWithValue("@subtotal", subtotal);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Detalle de venta actualizado correctamente.");
-                CargarDetalleVentas();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (dgvDetalleVentas.SelectedRows.Count == 0)
+            try
             {
-                MessageBox.Show("Seleccione un registro para eliminar.");
-                return;
+                if (dgvDetalleVentas.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Seleccione un registro para eliminar.");
+                    return;
+                }
+
+                int id = Convert.ToInt32(dgvDetalleVentas.SelectedRows[0].Cells["codigo_detalle"].Value);
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+                    string query = "DELETE FROM DetalleVentas WHERE codigo_detalle=@id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show("Detalle de venta eliminado correctamente.");
+                    CargarDetalleVentas();
+                    LimpiarCampos();
+                }
             }
-
-            int id = Convert.ToInt32(dgvDetalleVentas.SelectedRows[0].Cells["codigo_detalle"].Value);
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string query = "DELETE FROM DetalleVentas WHERE codigo_detalle=@id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Detalle de venta eliminado correctamente.");
-                CargarDetalleVentas();
-                LimpiarCampos();
+                MessageBox.Show("Error al conectar con la base de datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LimpiarCampos()
         {
             txtCantidad.Clear();
             txtPrecio.Clear();
         }
+
         private void btnRegresar_Click(object sender, EventArgs e)
         {
             CRUD ventanaPrincipal = new CRUD();
