@@ -30,7 +30,7 @@ namespace ProyectopProgra2
                 using (SqlConnection conn = ConexionBD.ObtenerConexion())
                 {
                     conn.Open();
-                    string query = "SELECT codigo_usuario, nombre_usuario, contraseña_usuario FROM Usuarios";
+                    string query = "SELECT codigo_usuario, nombre_usuario, clave_usuario FROM Usuarios";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
@@ -54,7 +54,7 @@ namespace ProyectopProgra2
             if (e.RowIndex >= 0)
             {
                 txtUsuario.Text = dgvUsuarios.Rows[e.RowIndex].Cells["nombre_usuario"].Value.ToString();
-                txtContrasena.Text = dgvUsuarios.Rows[e.RowIndex].Cells["contraseña_usuario"].Value.ToString();
+                txtContrasena.Text = dgvUsuarios.Rows[e.RowIndex].Cells["clave_usuario"].Value.ToString();
             }
         }
 
@@ -72,7 +72,7 @@ namespace ProyectopProgra2
                 {
                     conn.Open();
                     string query = @"INSERT INTO Usuarios 
-                                     (nombre_usuario, contraseña_usuario, rol_usuario, estado_usuario)
+                                     (nombre_usuario, clave_usuario, rol_usuario, estado_usuario)
                                      VALUES (@nombre, @contrasena, @rol, @estado)";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
@@ -107,7 +107,7 @@ namespace ProyectopProgra2
                 using (SqlConnection conn = ConexionBD.ObtenerConexion())
                 {
                     conn.Open();
-                    string query = "UPDATE Usuarios SET nombre_usuario=@nombre, contraseña_usuario=@contrasena WHERE codigo_usuario=@id";
+                    string query = "UPDATE Usuarios SET nombre_usuario=@nombre, clave_usuario=@contrasena WHERE codigo_usuario=@id";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@nombre", txtUsuario.Text);
                     cmd.Parameters.AddWithValue("@contrasena", txtContrasena.Text);
